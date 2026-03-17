@@ -16,16 +16,14 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>playwright</artifactId>
+            <version>1.57.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.9.2</version> <!-- Лучше использовать актуальную версию -->
-            <scope>test</scope> <!-- Указывает, что библиотека нужна только для тестов -->
-        </dependency>
-
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured</artifactId>
-            <version>5.4.0</version>
+            <version>5.10.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
