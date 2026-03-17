@@ -3,51 +3,60 @@ package tests;
 import com.microsoft.playwright.*;
 import org.junit.jupiter.api.*;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class FirstTest {
 
-    private static Playwright playwright;
-    private static Browser browser;
-    private Page page;
+    // Объявляем переменные, которые будем использовать во всех тестах
+    static Playwright playwright;
+    static Browser browser;
+    Page page; // Страница (вкладка) для каждого теста
 
+    // @BeforeAll - выполнится один раз перед всеми тестами
     @BeforeAll
     static void setup() {
-        playwright = Playwright.create();
+        playwright = Playwright.create(); // Запускаем движок Playwright
+        // Запускаем браузер (Chromium) НЕ в фоне, чтобы видеть, что происходит
         browser = playwright.chromium().launch(new BrowserType.LaunchOptions()
-                .setHeadless(false)  // Видим браузер
-                .setSlowMo(2000));     // Замедление, чтоб успевать смотреть
+                .setHeadless(false) // Не в фоне (headed mode)
+                .setSlowMo(100));   // Замедление на 100ms, чтобы видеть шаги
     }
 
+    // @BeforeEach - выполнится перед каждым тестом
     @BeforeEach
-    void setUp() {
-        page = browser.newPage();
+    void createPageAndNavigate() {
+        page = browser.newPage(); // Открываем новую вкладку
+        page.navigate("https://opensource-demo.orangehrmlive.com/"); // Идём на сайт
     }
 
+    // @Test - это и есть наш тест
     @Test
-    void firstTest() {
-        page.navigate("https://opensource-demo.orangehrmlive.com/");
-
-        // Вводим логин
+    void loginTest() {
+        // Шаг 1: Найти поле для логина и ввести текст
         page.locator("input[name='username']").fill("Admin");
-        // Вводим пароль
+
+        // Шаг 2: Найти поле для пароля и ввести текст
         page.locator("input[name='password']").fill("admin123");
-        // Жмём кнопку
+
+        // Шаг 3: Найти кнопку и кликнуть
         page.locator("button[type='submit']").click();
-        // Проверяем, что залогинились
-        var x3 = page.locator("h6:has-text('Dashboard')").isVisible();
 
-        Assertions.assertTrue(x3);
-
-        System.out.println("Тест прошел, красава!");
+        // Шаг 4: Проверить, что после логина появилась панель (например, заголовок Dashboard)
+        Locator dashboardHeader = page.locator("h6:has-text('Dashboard')");
+        // Проверяем, что элемент виден
+        assertTrue(dashboardHeader.isVisible(), "Заголовок Dashboard не появился, логин скорее всего не удался");
     }
 
+    // @AfterEach - выполнится после каждого теста
     @AfterEach
-    void tearDown() {
+    void closePage() {
         page.close();
     }
 
+    // @AfterAll - выполнится один раз после всех тестов
     @AfterAll
     static void teardown() {
-        browser.close();
-        playwright.close();
+        browser.close();  // Закрываем браузер
+        playwright.close(); // Закрываем движок Playwright
     }
 }
