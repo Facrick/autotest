@@ -1,11 +1,11 @@
-package tests;
+package rtrdt;
 
 import com.microsoft.playwright.*;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FirstTest {
+public class UITest {
 
     // Объявляем переменные, которые будем использовать во всех тестах
     static Playwright playwright;
@@ -41,10 +41,11 @@ public class FirstTest {
         // Шаг 3: Найти кнопку и кликнуть
         page.locator("button[type='submit']").click();
 
-        // Шаг 4: Проверить, что после логина появилась панель (например, заголовок Dashboard)
-        Locator dashboardHeader = page.locator("h6:has-text('Dashboard')");
-        // Проверяем, что элемент виден
-        assertTrue(dashboardHeader.isVisible(), "Заголовок Dashboard не появился, логин скорее всего не удался");
+        // Шаг 4: Ждём, пока появится элемент Dashboard (максимум 10 секунд)
+        page.locator("h6:has-text('Dashboard')").waitFor(new Locator.WaitForOptions().setTimeout(10000));
+
+        // Шаг 5: Проверить, что после логина появилась панель Dashboard
+        assertTrue(page.locator("h6:has-text('Dashboard')").isVisible(), "Заголовок Dashboard не появился, логин скорее всего не удался");
     }
 
     // @AfterEach - выполнится после каждого теста

@@ -59,9 +59,8 @@ public class UserGetTests extends BaseTest {
     @Test
     @DisplayName("Получение несуществующего пользователя")
     void testGetNonExistentUser() {
-        User user = userService.getUserById(999);
+        assertThrows(RuntimeException.class, () -> userService.getUserById(999), "Должно выбрасываться исключение при 404");
 
-        assertNull(user, "Для несуществующего пользователя должен вернуться null");
-        System.out.println("✓ Несуществующий пользователь обработан корректно");
+        System.out.println("✓ Несуществующий пользователь обработан корректно (исключение)");
     }
 }
